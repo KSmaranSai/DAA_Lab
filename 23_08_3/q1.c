@@ -53,17 +53,20 @@ int main(int argc, char *argv[])
 		printf("%d\n", num[i]);
 	}
 
+	// initialising binary array
 	int **binary = (int **)malloc(n * sizeof(int *));
 	for (int i = 0; i < n; i++)
 	{
 		binary[i] = (int *)malloc(16 * sizeof(int));
 	}
 
+	// convert to binary
 	for (int i = 0; i < n; i++)
 	{
 		convertToBinary(num[i],binary[i],0);
 	}
 
+	// printing in output file
 	for (int i = 0; i < n; i++)
 	{
 		fprintf(f_output,"The binary equivalent of %d is : ",num[i]);

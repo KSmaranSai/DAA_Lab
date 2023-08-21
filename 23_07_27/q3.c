@@ -42,10 +42,10 @@ int main()
 
     // Operations on the array 1- Finding duplicates
     int *array2 = (int *)malloc(n * sizeof(int)); // will hold only values excluding duplicate
-    int *no_of_instances = (int *)malloc(n * sizeof(int));
+    int *no_of_instances = (int *)malloc(n * sizeof(int)); // will store number of instances according to the array2 elements
 
-    int count_wd = 0;
-    for (int i = 0; i < n; i++)
+    int count_wd = 0;//counts number of distinct elements in array2
+    for (int i = 0; i < n; i++) //traverses the given array
     {
         int index = findIndex(array2, count_wd, array[i]);
         if (index != -1)

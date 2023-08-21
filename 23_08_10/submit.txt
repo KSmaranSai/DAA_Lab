@@ -1,0 +1,182 @@
+// Q1. Write a program to implement Binary Search to give the position of
+// leftmost appearance of the element in the array being searched. Display the number of
+// comparisons made while searching
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int binarySearch(int *array, int size, int key,int *comparisions)
+{
+    int index = -1;
+    int high = size, low = 0;
+
+    while (low <= high)
+    {
+        (*comparisions)++;
+        int mid = low + ((high - low) / 2);
+        if (array[mid] == key)
+        {
+            index = mid;
+            high = mid-1;
+        }
+        else if (array[mid] < key)
+        {
+            low = mid+1;
+        }
+        else
+        {
+            high = mid-1;
+        }
+    }
+
+    return index;
+}
+
+int main()
+{
+    // initalising array
+    int *array;
+    int n =5, key,comparsions = 0;
+    printf("Enter size of array : ");
+    scanf("%d", &n);
+    array = (int *)malloc(sizeof(int) * n);
+
+    // taking inputs for the array
+    printf("Enter elements of array : ");
+    for (int i = 0; i < n; i++)
+    {
+        scanf("%d", &array[i]);
+    }
+
+    printf("Enter Key : ");
+    scanf("%d", &key);
+
+
+    int index = binarySearch(array, n, key,&comparsions);
+    printf("%d found at : %d\n",key,index);
+    printf("Number of comparisions : %d",comparsions);
+
+    return 0;
+}
+
+
+
+//Q2. Write a menu driven program to sort a list of elements in ascending
+//order using Insertion Sort technique. The nature of the input data is choice based and a distinct
+//file is considered for each choice. The sorted elements can be stored in a separate output file. After sorting display the content of the output file along with number of comparisons. Based on
+//the number of comparisons, conclude the input scenario is either best or worst cas
+
+#include <stdio.h>
+#include <stdlib.h>
+
+void insertionSort(int array[], int n, int *comparisons)
+{
+    for (int i = 1; i < n; i++)
+    {
+        int key = array[i];
+        int j = i - 1;
+
+        while (j >= 0 && array[j] > key)
+        {
+            (*comparisons)++;
+            array[j + 1] = array[j];
+            j--;
+        }
+        array[j + 1] = key;
+    }
+}
+
+void printArrayToFile(FILE *output, int array[], int n)
+{
+    if (output == NULL)
+    {
+        printf("Error opening file");
+        return;
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        fprintf(output, "%d ", array[i]);
+    }
+
+    fclose(output);
+}
+
+void printArrayWithComparisons(int array[], int n, int comparisons)
+{
+    printf("Sorted Array: ");
+    for (int i = 0; i < n; i++)
+    {
+        printf("%d ", array[i]);
+    }
+    printf("\nNumber of Comparisons: %d\n", comparisons);
+
+    if (comparisons == 0)
+    {
+        printf("Input scenario is best case.\n");
+    }
+    else if (comparisons == (n * (n - 1)) / 2)
+    {
+        printf("Input scenario is worst case.\n");
+    }
+    else
+    {
+        printf("Input scenario is average case.\n");
+    }
+}
+
+int main()
+{
+    int option, n = 0;
+    int array[500];
+    int comparisons = 0;
+    FILE *input;
+    FILE *output;
+
+    printf("MAIN MENU (INSERTION SORT)\n");
+    printf("1. Ascending Data\n");
+    printf("2. Descending Data\n");
+    printf("3. Random Data\n");
+    printf("4. Exit\n");
+    printf("Enter your option: ");
+    scanf("%d", &option);
+
+    switch (option)
+    {
+    case 1:
+    {
+        input = fopen("inAsce.dat", "r");
+        output = fopen("outInsAsce.dat", "w");
+        break;
+    }
+    case 2:
+    {
+        input = fopen("inDesc.dat", "r");
+        output = fopen("outInsDesc.dat", "w");
+        break;
+    }
+    case 3:
+    {
+        input = fopen("inRand.dat", "r");
+        output = fopen("outInsRand.dat", "w");
+        break;
+    }
+    case 4:
+        exit(0);
+    default:
+        printf("Invalid option. Please select a valid option.\n");
+    }
+
+
+    while (fscanf(input, "%d", &array[n]) == 1)
+    {
+        n++;
+    }
+
+    fclose(input);
+    insertionSort(array, n, &comparisons);
+    printArrayToFile(output, array, n);
+    printArrayWithComparisons(array, n, comparisons);
+
+    return 0;
+}
