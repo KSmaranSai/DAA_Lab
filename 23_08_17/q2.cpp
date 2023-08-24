@@ -11,6 +11,7 @@ int partition(int arr[], int si, int ei,int *comp)
     {
         if (arr[j] <= arr[ei])
         {
+            (*comp)++;
             i++;
             int temp = arr[j];
             arr[j] = arr[i];
@@ -30,9 +31,9 @@ void quicksort(int arr[], int si, int ei,int *comp)
     {
         return;
     }
-    int p_index = partition(arr, si, ei);
-    quicksort(arr, si, p_index - 1,&comp);
-    quicksort(arr, p_index + 1, ei,&comp);
+    int p_index = partition(arr, si, ei,comp);
+    quicksort(arr, si, p_index - 1,comp);
+    quicksort(arr, p_index + 1, ei,comp);
 }
 
 void printArrayToFile(FILE *output, int array[], int n)
@@ -59,23 +60,15 @@ void printArrayWithComparisons(int array[], int n, int comparisons)
         printf("%d ", array[i]);
     }
     printf("\nNumber of Comparisons: %d\n", comparisons);
-
-    if (comparisons == 0)
-    {
-        printf("Input scenario is best case.\n");
-    }
-    else if (comparisons == (n * (n - 1)) / 2)
-    {
-        printf("Input scenario is worst case.\n");
-    }
-    else
-    {
-        printf("Input scenario is average case.\n");
-    }
 }
 
 int main()
 {
+    // Execution time
+    clock_t start, end;
+    double execution_time;
+    start = clock();
+
     int option, n = 0;
     int array[500];
     int comparisons = 0;
@@ -122,9 +115,13 @@ int main()
     }
 
     fclose(input);
-    quicksort(array, 0, n);
+    quicksort(array, 0, n-1,&comparisons);
     printArrayToFile(output, array, n);
     printArrayWithComparisons(array, n,comparisons);
+
+    end = clock();
+    execution_time = ((double)(end - start)) / CLOCKS_PER_SEC;
+    printf("\nExecution time : %lf\n",execution_time);
 
     return 0;
 }

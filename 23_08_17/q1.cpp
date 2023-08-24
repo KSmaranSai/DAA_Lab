@@ -1,13 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <time.h>
 
-void merge(int arr[], int low, int mid, int high)
+void merge(int arr[], int low, int mid, int high, int *comparsions)
 {
     int *arr1 = new int[high - low + 1];
     int i = low, j = mid + 1, k = 0;
     while ((i <= mid) && (j <= high))
     {
+        (*comparsions)++;
         if (arr[i] > arr[j])
         {
             arr1[k++] = arr[j++];
@@ -32,16 +34,16 @@ void merge(int arr[], int low, int mid, int high)
     }
 }
 
-void mergeSort(int array[], int low, int high)
+void mergeSort(int array[], int low, int high, int *comparisons)
 {
     if (low >= high)
     {
         return;
     }
     int mid = low + ((high - low) / 2);
-    mergeSort(array, low, mid);
-    mergeSort(array, mid + 1, high);
-    merge(array, low, mid, high);
+    mergeSort(array, low, mid, comparisons);
+    mergeSort(array, mid + 1, high, comparisons);
+    merge(array, low, mid, high, comparisons);
 }
 
 void printArrayToFile(FILE *output, int array[], int n)
@@ -60,19 +62,26 @@ void printArrayToFile(FILE *output, int array[], int n)
     fclose(output);
 }
 
-void printArray(int array[], int n)
+void printArrayWithComparisons(int array[], int n, int comparisons)
 {
     printf("Sorted Array: ");
     for (int i = 0; i < n; i++)
     {
         printf("%d ", array[i]);
     }
+    printf("\nNumber of Comparisons: %d\n", comparisons);
 }
 
 int main()
 {
+    // Execution time
+    clock_t start, end;
+    double execution_time;
+    start = clock();
+
     int option, n = 0;
     int array[500];
+    int comparisons = 0;
     FILE *input;
     FILE *output;
 
@@ -116,9 +125,13 @@ int main()
     }
 
     fclose(input);
-    mergeSort(array, 0, n);
+    mergeSort(array, 0, n, &comparisons);
     printArrayToFile(output, array, n);
-    printArray(array, n);
+    printArrayWithComparisons(array, n, comparisons);
 
+    end = clock();
+    execution_time = ((double)(end - start)) / CLOCKS_PER_SEC;
+    printf("\nExecution time : %lf\n",execution_time);
+    
     return 0;
 }
